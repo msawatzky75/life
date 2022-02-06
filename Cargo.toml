@@ -9,6 +9,7 @@ edition = "2021"
 crossterm = "0.22.1"
 indexmap = "1.8.0"
 itertools = "0.10.3"
+wasm-bindgen = "0.2.48"
 
 [[bin]]
 name = "life"

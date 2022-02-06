@@ -124,13 +124,6 @@ fn main() -> Result<(), std::io::Error> {
 		cells: IndexMap::new(),
 	};
 
-	// insert a glider
-	// grid.cells.insert((0, 0), true);
-	// grid.cells.insert((2, 0), true);
-	// grid.cells.insert((1, 1), true);
-	// grid.cells.insert((2, 1), true);
-	// grid.cells.insert((1, 2), true);
-
 	insert_glider(&mut grid, (2, 5));
 
 	let mut gen = 0;
@@ -139,10 +132,10 @@ fn main() -> Result<(), std::io::Error> {
 			.queue(terminal::Clear(terminal::ClearType::All))?
 			.queue(cursor::MoveTo(0, 0))?
 			.queue(Print(grid.to_string(size, '0', ' ')))?
-			.queue(Print(format!("generaton: {gen}")))?
+			.queue(Print(format!("generaton: {gen}\n")))?
 			.flush()?;
 
-		std::thread::sleep(std::time::Duration::from_millis(100));
+		// std::thread::sleep(std::time::Duration::from_millis(100));
 		grid.tick();
 		gen += 1;
 	}
@@ -151,9 +144,9 @@ fn main() -> Result<(), std::io::Error> {
 }
 
 fn insert_glider(grid: &mut SquareGrid<bool>, pos: (i32, i32)) {
-	grid.cells.insert((pos.0 + 1, pos.1), true);
+	grid.cells.insert((pos.0, pos.1), true);
 	grid.cells.insert((pos.0 + 2, pos.1), true);
+	grid.cells.insert((pos.0 + 1, pos.1 + 1), true);
 	grid.cells.insert((pos.0 + 2, pos.1 + 1), true);
 	grid.cells.insert((pos.0 + 1, pos.1 + 2), true);
-	grid.cells.insert((pos.0, pos.1 + 2), true);
 }
