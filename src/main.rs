@@ -3,15 +3,15 @@ use indexmap::map::IndexMap;
 use std::io::{stdout, Write};
 
 struct SquareGrid<T> {
-	cells: IndexMap<(i32, i32), T>,
+	cells: IndexMap<(i128, i128), T>,
 }
 
 trait Serialize {
-	fn to_string(&self, size: (i32, i32), piece: char, empty: char) -> String;
+	fn to_string(&self, size: (i128, i128), piece: char, empty: char) -> String;
 }
 
 impl Serialize for SquareGrid<bool> {
-	fn to_string(&self, (width, height): (i32, i32), piece: char, empty: char) -> String {
+	fn to_string(&self, (width, height): (i128, i128), piece: char, empty: char) -> String {
 		let mut output: String = "".to_owned();
 
 		for y in 0..height {
@@ -28,9 +28,9 @@ impl Serialize for SquareGrid<bool> {
 
 trait Life {
 	fn tick(&mut self);
-	fn get_cells_to_consider(&self) -> Vec<(i32, i32)>;
-	fn neighbors(&self, pos: (i32, i32)) -> Vec<(i32, i32)>;
-	fn live_neighbors(&self, pos: (i32, i32)) -> i32;
+	fn get_cells_to_consider(&self) -> Vec<(i128, i128)>;
+	fn neighbors(&self, pos: (i128, i128)) -> Vec<(i128, i128)>;
+	fn live_neighbors(&self, pos: (i128, i128)) -> i128;
 }
 
 impl Life for SquareGrid<bool> {
@@ -54,7 +54,7 @@ impl Life for SquareGrid<bool> {
 		self.cells = next;
 	}
 
-	fn get_cells_to_consider(&self) -> Vec<(i32, i32)> {
+	fn get_cells_to_consider(&self) -> Vec<(i128, i128)> {
 		let mut cells_to_consider = Vec::new();
 
 		for (coord, _alive) in &self.cells {
@@ -75,7 +75,7 @@ impl Life for SquareGrid<bool> {
 		return cells_to_consider;
 	}
 
-	fn neighbors(&self, pos: (i32, i32)) -> Vec<(i32, i32)> {
+	fn neighbors(&self, pos: (i128, i128)) -> Vec<(i128, i128)> {
 		let mut neighbors = Vec::new();
 
 		for dx in -1..2 {
@@ -91,7 +91,7 @@ impl Life for SquareGrid<bool> {
 		return neighbors;
 	}
 
-	fn live_neighbors(&self, pos: (i32, i32)) -> i32 {
+	fn live_neighbors(&self, pos: (i128, i128)) -> i128 {
 		let mut count = 0;
 
 		for (x, y) in [
@@ -116,8 +116,8 @@ impl Life for SquareGrid<bool> {
 fn main() -> Result<(), std::io::Error> {
 	let mut stdout = stdout();
 	let size = (
-		terminal::size()?.0 as i32 - 1,
-		terminal::size()?.1 as i32 - 2,
+		terminal::size()?.0 as i128 - 1,
+		terminal::size()?.1 as i128 - 2,
 	);
 
 	let mut grid = SquareGrid {
@@ -135,7 +135,7 @@ fn main() -> Result<(), std::io::Error> {
 			.queue(Print(format!("generaton: {gen}\n")))?
 			.flush()?;
 
-		// std::thread::sleep(std::time::Duration::from_millis(100));
+		std::thread::sleep(std::time::Duration::from_millis(100));
 		grid.tick();
 		gen += 1;
 	}
@@ -143,7 +143,7 @@ fn main() -> Result<(), std::io::Error> {
 	Ok(())
 }
 
-fn insert_glider(grid: &mut SquareGrid<bool>, pos: (i32, i32)) {
+fn insert_glider(grid: &mut SquareGrid<bool>, pos: (i128, i128)) {
 	grid.cells.insert((pos.0, pos.1), true);
 	grid.cells.insert((pos.0 + 2, pos.1), true);
 	grid.cells.insert((pos.0 + 1, pos.1 + 1), true);
